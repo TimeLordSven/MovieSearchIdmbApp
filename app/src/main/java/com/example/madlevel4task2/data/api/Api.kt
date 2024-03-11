@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit
 class Api {
     companion object {
         private const val TMDB_BASE_URL = "https://api.themoviedb.org/3/"
-        private const val API_KEY = "1964712006647770f1ae4a8c49219b45"
 
         val tmdbClient by lazy { createApi(TMDB_BASE_URL) }
 

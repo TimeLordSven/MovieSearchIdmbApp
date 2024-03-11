@@ -10,5 +10,5 @@ interface ApiService {
     suspend fun searchMovies(
         @Query("query") query: String,
         @Query("api_key") apiKey: String
-    ): Response<ApiResponse<List<Movie>>>
+    ): Response<List<Movie>>
 }
