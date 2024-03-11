@@ -1,10 +1,10 @@
 package com.example.madlevel4task2.data.model
 
 data class Movie(
-    val backdropPath: String?,
-    val posterPath: String?,
+    val backdrop_path: String?,
+    val poster_path: String?,
     val title: String,
-    val releaseDate: String,
-    val rating: Double,
+    val release_date: String,
+    val popularity: Double,
     val overview: String
 )
