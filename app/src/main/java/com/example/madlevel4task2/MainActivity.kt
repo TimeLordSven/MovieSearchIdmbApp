@@ -3,26 +3,40 @@ package com.example.madlevel4task2
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.madlevel4task2.ui.screens.MovieDetailScreen
+import com.example.madlevel4task2.ui.screens.MovieOverviewScreen
+import com.example.madlevel4task2.ui.screens.MoviesScreens
 import com.example.madlevel4task2.ui.theme.MadLevel4Task2Theme
+import com.example.madlevel4task2.viewmodel.MoviesViewModel
 
 class MainActivity : ComponentActivity() {
+    private val moviesViewModel: MoviesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MadLevel4Task2Theme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    val navController = rememberNavController()
+
+                    MovieNavHost(
+                        navController = navController,
+                        moviesViewModel = moviesViewModel,  // Pass the ViewModel to MovieNavHost
+                        modifier = Modifier
+                    )
                 }
             }
         }
@@ -30,17 +44,21 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
+private fun MovieNavHost(
+    navController: NavHostController,
+    moviesViewModel: MoviesViewModel,  // Pass the ViewModel as a parameter
+    modifier: Modifier
+) {
+    NavHost(
+        navController = navController,
+        startDestination = MoviesScreens.MovieOverviewScreen.name,
         modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MadLevel4Task2Theme {
-        Greeting("Android")
+    ) {
+        composable(MoviesScreens.MovieOverviewScreen.name) {
+            MovieOverviewScreen(moviesViewModel)  // Pass the ViewModel to MovieOverviewScreen
+        }
+        composable(MoviesScreens.MovieDetailScreen.name) {
+            MovieDetailScreen()
+        }
     }
 }
