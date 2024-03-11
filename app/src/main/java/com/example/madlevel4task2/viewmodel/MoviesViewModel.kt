@@ -28,7 +28,7 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
                 val result = repository.searchMovies(query)
 
                 withContext(Dispatchers.Main) {
-                    _movies.value = result as Resource<List<Movie>>
+                    _movies.value = result
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

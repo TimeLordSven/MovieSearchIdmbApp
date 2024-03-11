@@ -1,9 +1,6 @@
 package com.example.madlevel4task2.ui.screens
 
-import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,23 +26,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import com.example.madlevel4task2.R
 import com.example.madlevel4task2.data.api.util.Resource
 import com.example.madlevel4task2.data.model.Movie
 import com.example.madlevel4task2.viewmodel.MoviesViewModel
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
@@ -54,7 +48,7 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Movie Search") },
+                title = { },
                 actions = {
                     SearchView { query ->
                         Log.d("SearchBar", "Search query: $query")
@@ -63,12 +57,11 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
                 }
             )
         },
-        content = {
-            Text(text = "Movie Search")
+        content = {innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(innerPadding)
             ) {
                 Text(text = "Movie Search")
 
@@ -98,7 +91,6 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
         }
     )
 }
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchView(
     searchTMDB: (String) -> Unit
@@ -120,7 +112,7 @@ fun SearchView(
                 IconButton(
                     onClick = {
                         searchQueryState.value =
-                            TextFieldValue(String()) // Remove text from TextField when you press the 'X' icon
+                            TextFieldValue(String())
                     }
                 ) {
                     Icon(
@@ -179,19 +171,17 @@ private fun MovieItem(movie: Movie) {
         onClick = {  }
     ) {
         Column {
-            val posterPath = movie.posterPath
-            if (!posterPath.isNullOrBlank()) {
-                Image(
-                    painter = rememberImagePainter(data = movie.posterPath),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
+            val baseUrl = "https://image.tmdb.org/t/p/w500"
+            val fullImageUrl = movie.poster_path?.let { baseUrl + it }
+            if (!movie.poster_path.isNullOrBlank()) {
+                AsyncImage(
+                    model = fullImageUrl,
+                    contentDescription = "A funny image fitting your movie search, that just wont load"
                 )
             } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
+                AsyncImage(
+                    model = "https://critics.io/img/movies/poster-placeholder.png",
+                    contentDescription = "A funny image fitting your movie search, that just wont load, and has no image"
                 )
             }
         }
