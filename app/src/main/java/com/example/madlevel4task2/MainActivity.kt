@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
                     MovieNavHost(
                         navController = navController,
-                        moviesViewModel = moviesViewModel,  // Pass the ViewModel to MovieNavHost
+                        moviesViewModel = moviesViewModel,
                         modifier = Modifier
                     )
                 }
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MovieNavHost(
     navController: NavHostController,
-    moviesViewModel: MoviesViewModel,  // Pass the ViewModel as a parameter
+    moviesViewModel: MoviesViewModel,
     modifier: Modifier
 ) {
     NavHost(
@@ -55,7 +55,7 @@ private fun MovieNavHost(
         modifier = modifier
     ) {
         composable(MoviesScreens.MovieOverviewScreen.name) {
-            MovieOverviewScreen(moviesViewModel)  // Pass the ViewModel to MovieOverviewScreen
+            MovieOverviewScreen(moviesViewModel)
         }
         composable(MoviesScreens.MovieDetailScreen.name) {
             MovieDetailScreen()

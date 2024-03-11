@@ -2,12 +2,21 @@ package com.example.madlevel4task2.ui.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,13 +31,16 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.example.madlevel4task2.R
 import com.example.madlevel4task2.data.api.util.Resource
 import com.example.madlevel4task2.data.model.Movie
@@ -50,32 +62,41 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
                     }
                 }
             )
-        }
-    ) {
-        when (val resource = moviesState) {
-            is Resource.Success<List<Movie>> -> {
-                val movies = resource.data
-                if (movies != null && movies.isNotEmpty()) {
-                    // Log the list of movies
-                    Log.d("MovieOverview", "List of Movies: $movies")
-                } else {
-                    Log.d("MovieOverview", "No movies found.")
+        },
+        content = {
+            Text(text = "Movie Search")
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(text = "Movie Search")
+
+                when (val resource = moviesState) {
+                    is Resource.Success<List<Movie>> -> {
+                        val movies = resource.data
+                        if (!movies.isNullOrEmpty()) {
+                            MovieGrid(movies)
+                        } else {
+                            Log.d("MovieOverview", "No movies found.")
+                        }
+                    }
+
+                    is Resource.Error<*> -> {
+                        Log.e("MovieOverview", "Error: ${resource.message}")
+                    }
+
+                    is Resource.Loading<*> -> {
+                        Log.d("MovieOverview", "Loading...")
+                    }
+
+                    else -> {
+                        Log.d("MovieOverview", "Unknown state")
+                    }
                 }
             }
-
-            is Resource.Error<*> -> {
-                Log.e("MovieOverview", "Error: ${resource.message}")
-            }
-
-            is Resource.Loading<*> -> {
-                Log.d("MovieOverview", "Loading...")
-            }
-
-            else -> {
-                Log.d("MovieOverview", "Unknown state")
-            }
         }
-    }
+    )
 }
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -114,15 +135,13 @@ fun SearchView(
         },
         trailingIcon = {
             IconButton(onClick = {
-                // Use the MoviesViewModel to perform the search operation
                 val query = searchQueryState.value.text
                 searchTMDB(query)
-                // Hide the keyboard
                 keyboardController?.hide()
             }) {
                 Icon(
                     Icons.Default.Search,
-                    contentDescription = "Search for movies in TMDB based on the search argument provided",
+                    contentDescription = "Search for movies in IMDB based on the search argument provided",
                     modifier = Modifier
                         .padding(8.dp)
                         .size(24.dp),
@@ -135,6 +154,46 @@ fun SearchView(
             )
         },
         singleLine = true,
-        shape = RectangleShape, // The TextField has rounded corners top left and right by default
+        shape = RectangleShape,
     )
+}
+@Composable
+private fun MovieGrid(movies: List<Movie>) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        modifier = Modifier.padding(16.dp)
+    ) {
+        items(movies) { movie ->
+            MovieItem(movie = movie)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MovieItem(movie: Movie) {
+    Card(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        onClick = {  }
+    ) {
+        Column {
+            val posterPath = movie.posterPath
+            if (!posterPath.isNullOrBlank()) {
+                Image(
+                    painter = rememberImagePainter(data = movie.posterPath),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
+        }
+    }
 }
