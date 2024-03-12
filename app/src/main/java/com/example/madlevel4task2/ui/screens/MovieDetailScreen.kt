@@ -38,85 +38,95 @@ fun MovieDetailScreen(moviesViewModel: MoviesViewModel) {
 
 @Composable
 private fun MovieDetailsContent(movie: Movie) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        content = {
+            item { BackdropImage(movie) }
+            item { PosterTitleAndRating(movie) }
+            item { SectionTitle() }
+            item { OverviewText(movie) }
+        }
+    )
+}
+
+@Composable
+private fun BackdropImage(movie: Movie) {
+    val baseUrl = "https://image.tmdb.org/t/p/w500"
+    val fullBackdropUrl = movie.backdrop_path?.let { baseUrl + it }
+
+    AsyncImage(
+        model = fullBackdropUrl,
+        contentDescription = "A funny image",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+    )
+}
+
+@Composable
+private fun PosterTitleAndRating(movie: Movie) {
     val baseUrl = "https://image.tmdb.org/t/p/w500"
     val fullPosterUrl = movie.poster_path?.let { baseUrl + it }
-    val fullBackdropUrl = movie.backdrop_path?.let { baseUrl + it }
-    LazyColumn(
+
+    Row(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        item {
-            AsyncImage(
-                model = fullBackdropUrl,
-                contentDescription = "A funny image",
-                contentScale = ContentScale.Crop,
+        AsyncImage(model = fullPosterUrl, contentDescription = "A funny image")
+        MovieTitleAndRating(movie)
+    }
+}
+
+@Composable
+private fun MovieTitleAndRating(movie: Movie) {
+    Column(
+        modifier = Modifier.padding(start = 16.dp)
+    ) {
+        Text(
+            text = movie.title,
+            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.secondary)
+                .padding(4.dp)
+                .clip(MaterialTheme.shapes.small)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = "Star Icon",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
+                    .padding(4.dp)
+                    .size(20.dp)
             )
-        }
-
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    model = fullPosterUrl,
-                    contentDescription = "A funny image"
-                )
-                Column(
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = movie.title,
-                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.secondary)
-                            .padding(4.dp)
-                            .clip(MaterialTheme.shapes.small)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Star Icon",
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(20.dp)
-                        )
-                        Text(
-                            text = movie.vote_average.toString(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
             Text(
-                text = "Overview",
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier
-                    .padding(16.dp)
-            )
-        }
-
-        item {
-            Text(
-                text = movie.overview,
+                text = movie.vote_average.toString(),
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(4.dp)
             )
         }
     }
+}
+
+@Composable
+private fun SectionTitle() {
+    Text(
+        text = "Overview",
+        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+        modifier = Modifier.padding(16.dp)
+    )
+}
+
+@Composable
+private fun OverviewText(movie: Movie) {
+    Text(
+        text = movie.overview,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
 }
