@@ -1,5 +1,5 @@
 package com.example.madlevel4task2
-
+//Author: Sven Molenaar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

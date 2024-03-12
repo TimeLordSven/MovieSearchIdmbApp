@@ -1,4 +1,5 @@
 <resources>
+    //Author: Sven Molenaar
     <string name="app_name">Mad Level 4 Task 2</string>
     <string name="overview_title">Overview</string>
     <string name="search_movie_hint">Search for Movies!</string>

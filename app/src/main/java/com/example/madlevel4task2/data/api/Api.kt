@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.data.api
-
+//Author: Sven Molenaar
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -10,7 +10,6 @@ class Api {
     companion object {
         private const val TMDB_BASE_URL = "https://api.themoviedb.org/3/"
         private const val API_KEY = "1964712006647770f1ae4a8c49219b45"
-//ToDo make LocalVariable
 
         val tmdbClient by lazy { createApi(TMDB_BASE_URL, API_KEY) }
 

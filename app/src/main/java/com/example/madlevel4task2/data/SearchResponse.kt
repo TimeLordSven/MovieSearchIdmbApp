@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.data
-
+//Author: Sven Molenaar
 import com.example.madlevel4task2.data.model.Movie
 
 data class SearchResponse(

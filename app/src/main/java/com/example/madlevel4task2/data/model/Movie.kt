@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.data.model
-
+//Author: Sven Molenaar
 data class Movie(
     val backdrop_path: String?,
     val poster_path: String?,

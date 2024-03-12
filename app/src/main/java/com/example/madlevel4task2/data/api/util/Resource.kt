@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.data.api.util
-
+//Author: Sven Molenaar
 sealed class Resource<T>(
     val data: T? = null,
     val message: String? = null

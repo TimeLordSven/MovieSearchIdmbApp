@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.viewmodel
-
+//Author: Sven Molenaar
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData

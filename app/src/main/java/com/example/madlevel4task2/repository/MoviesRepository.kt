@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.repository
-
+//Author: Sven Molenaar
 import com.example.madlevel4task2.data.api.Api
 import com.example.madlevel4task2.data.api.ApiService
 import com.example.madlevel4task2.data.api.util.Resource

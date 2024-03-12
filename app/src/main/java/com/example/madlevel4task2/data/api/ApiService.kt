@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.data.api
-
+//Author: Sven Molenaar
 import com.example.madlevel4task2.data.SearchResponse
 import retrofit2.Response
 import retrofit2.http.GET

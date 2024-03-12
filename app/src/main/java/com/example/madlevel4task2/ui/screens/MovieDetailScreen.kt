@@ -1,5 +1,5 @@
 package com.example.madlevel4task2.ui.screens
-
+//Author: Sven Molenaar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
