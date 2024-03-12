@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -49,16 +51,19 @@ private fun MovieNavHost(
     moviesViewModel: MoviesViewModel,
     modifier: Modifier
 ) {
+    val selectedMovie by moviesViewModel.selectedMovie.observeAsState()
     NavHost(
         navController = navController,
         startDestination = MoviesScreens.MovieOverviewScreen.name,
         modifier = modifier
     ) {
         composable(MoviesScreens.MovieOverviewScreen.name) {
-            MovieOverviewScreen(moviesViewModel)
+            MovieOverviewScreen(moviesViewModel, navController)
         }
         composable(MoviesScreens.MovieDetailScreen.name) {
-            MovieDetailScreen()
+            selectedMovie?.let {
+                MovieDetailScreen(moviesViewModel)
+            }
         }
     }
 }

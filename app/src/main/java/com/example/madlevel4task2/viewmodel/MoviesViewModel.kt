@@ -20,6 +20,10 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
     val movies: LiveData<Resource<List<Movie>>>
         get() = _movies
 
+    private val _selectedMovie = MutableLiveData<Movie?>()
+    val selectedMovie: LiveData<Movie?>
+        get() = _selectedMovie
+
     fun searchMovies(query: String) {
         _movies.value = Resource.Loading()
 
@@ -36,5 +40,9 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
                 }
             }
         }
+    }
+
+    fun setSelectedMovie(movie: Movie?) {
+        _selectedMovie.value = movie
     }
 }

@@ -1,7 +1,6 @@
 package com.example.madlevel4task2.ui.screens
 
 import android.util.Log
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.madlevel4task2.R
 import com.example.madlevel4task2.data.api.util.Resource
@@ -42,7 +42,7 @@ import com.example.madlevel4task2.viewmodel.MoviesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
+fun MovieOverviewScreen(moviesViewModel: MoviesViewModel, navController: NavHostController) {
     val moviesState by moviesViewModel.movies.observeAsState()
 
     Scaffold(
@@ -50,10 +50,13 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
             TopAppBar(
                 title = { },
                 actions = {
-                    SearchView { query ->
-                        Log.d("SearchBar", "Search query: $query")
-                        moviesViewModel.searchMovies(query)
-                    }
+                    SearchView(
+                        searchTMDB = { query ->
+                            Log.d("SearchBar", "Search query: $query")
+                            moviesViewModel.searchMovies(query)
+                        },
+                        moviesViewModel = moviesViewModel
+                    )
                 }
             )
         },
@@ -69,7 +72,7 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
                     is Resource.Success<List<Movie>> -> {
                         val movies = resource.data
                         if (!movies.isNullOrEmpty()) {
-                            MovieGrid(movies)
+                            MovieGrid(movies, navController, moviesViewModel)
                         } else {
                             Log.d("MovieOverview", "No movies found.")
                         }
@@ -93,7 +96,8 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel) {
 }
 @Composable
 fun SearchView(
-    searchTMDB: (String) -> Unit
+    searchTMDB: (String) -> Unit,
+    moviesViewModel: MoviesViewModel
 ) {
     val searchQueryState = rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(String()))
@@ -129,6 +133,7 @@ fun SearchView(
             IconButton(onClick = {
                 val query = searchQueryState.value.text
                 searchTMDB(query)
+                moviesViewModel.setSelectedMovie(null)
                 keyboardController?.hide()
             }) {
                 Icon(
@@ -150,25 +155,28 @@ fun SearchView(
     )
 }
 @Composable
-private fun MovieGrid(movies: List<Movie>) {
+private fun MovieGrid(movies: List<Movie>, navController: NavHostController, moviesViewModel: MoviesViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         modifier = Modifier.padding(16.dp)
     ) {
         items(movies) { movie ->
-            MovieItem(movie = movie)
+            MovieItem(movie = movie, navController = navController, moviesViewModel = moviesViewModel)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MovieItem(movie: Movie) {
+private fun MovieItem(movie: Movie, navController: NavHostController, moviesViewModel: MoviesViewModel) {
     Card(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
-        onClick = {  }
+        onClick = {
+            moviesViewModel.setSelectedMovie(movie)
+            navController.navigate(MoviesScreens.MovieDetailScreen.name)
+        }
     ) {
         Column {
             val baseUrl = "https://image.tmdb.org/t/p/w500"
@@ -176,12 +184,12 @@ private fun MovieItem(movie: Movie) {
             if (!movie.poster_path.isNullOrBlank()) {
                 AsyncImage(
                     model = fullImageUrl,
-                    contentDescription = "A funny image fitting your movie search, that just wont load"
+                    contentDescription = "A funny image"
                 )
             } else {
                 AsyncImage(
                     model = "https://critics.io/img/movies/poster-placeholder.png",
-                    contentDescription = "A funny image fitting your movie search, that just wont load, and has no image"
+                    contentDescription = "A funny image"
                 )
             }
         }
