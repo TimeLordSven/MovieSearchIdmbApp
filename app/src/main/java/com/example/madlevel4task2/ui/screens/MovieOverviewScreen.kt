@@ -66,8 +66,6 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel, navController: NavHost
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                Text(text = "Movie Search")
-
                 when (val resource = moviesState) {
                     is Resource.Success<List<Movie>> -> {
                         val movies = resource.data
