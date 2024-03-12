@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.madlevel4task2.R
 import com.example.madlevel4task2.data.model.Movie
 import com.example.madlevel4task2.viewmodel.MoviesViewModel
 
@@ -116,7 +118,7 @@ private fun MovieTitleAndRating(movie: Movie) {
 @Composable
 private fun SectionTitle() {
     Text(
-        text = "Overview",
+        text = stringResource(R.string.overview_title),
         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
         modifier = Modifier.padding(16.dp)
     )

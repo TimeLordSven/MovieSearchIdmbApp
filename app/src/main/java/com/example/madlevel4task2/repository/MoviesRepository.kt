@@ -1,6 +1,5 @@
 package com.example.madlevel4task2.repository
 
-import android.util.Log
 import com.example.madlevel4task2.data.api.Api
 import com.example.madlevel4task2.data.api.ApiService
 import com.example.madlevel4task2.data.api.util.Resource
@@ -18,7 +17,6 @@ class MovieRepository {
 
             }
         } catch (e: Exception) {
-            Log.e("MovieRepository", e.message ?: "No exception message available")
             Resource.Error("An unknown error occurred while fetching data from the MovieAPI.")
         }
     }

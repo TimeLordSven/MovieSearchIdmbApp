@@ -17,10 +17,11 @@ class MoviesViewModel(application: Application) : AndroidViewModel(application) 
     private val repository = MovieRepository()
 
     private val _movies = MutableLiveData<Resource<List<Movie>>>()
+
+    private val _selectedMovie = MutableLiveData<Movie?>()
     val movies: LiveData<Resource<List<Movie>>>
         get() = _movies
 
-    private val _selectedMovie = MutableLiveData<Movie?>()
     val selectedMovie: LiveData<Movie?>
         get() = _selectedMovie
 

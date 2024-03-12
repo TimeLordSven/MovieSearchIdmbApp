@@ -1,6 +1,7 @@
 package com.example.madlevel4task2.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +14,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -25,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -60,11 +64,13 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel, navController: NavHost
                 }
             )
         },
-        content = {innerPadding ->
+        content = { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (val resource = moviesState) {
                     is Resource.Success<List<Movie>> -> {
@@ -72,26 +78,44 @@ fun MovieOverviewScreen(moviesViewModel: MoviesViewModel, navController: NavHost
                         if (!movies.isNullOrEmpty()) {
                             MovieGrid(movies, navController, moviesViewModel)
                         } else {
-                            Log.d("MovieOverview", "No movies found.")
+                            Text(
+                                text = stringResource(R.string.no_movies_found),
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(4.dp)
+                            )
                         }
                     }
 
                     is Resource.Error<*> -> {
-                        Log.e("MovieOverview", "Error: ${resource.message}")
+                        Text(
+                            text = stringResource(R.string.search_error, resource.message as Any),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(4.dp)
+                        )
                     }
 
                     is Resource.Loading<*> -> {
-                        Log.d("MovieOverview", "Loading...")
+                        Text(
+                            text = stringResource(R.string.still_loading),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(4.dp)
+                        )
+                        CircularProgressIndicator()
                     }
 
                     else -> {
-                        Log.d("MovieOverview", "Unknown state")
+                        Text(
+                            text = stringResource(R.string.unknown_state),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(4.dp)
+                        )
                     }
                 }
             }
         }
     )
 }
+
 @Composable
 fun SearchView(
     searchTMDB: (String) -> Unit,
@@ -152,21 +176,34 @@ fun SearchView(
         shape = RectangleShape,
     )
 }
+
 @Composable
-private fun MovieGrid(movies: List<Movie>, navController: NavHostController, moviesViewModel: MoviesViewModel) {
+private fun MovieGrid(
+    movies: List<Movie>,
+    navController: NavHostController,
+    moviesViewModel: MoviesViewModel
+) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         modifier = Modifier.padding(16.dp)
     ) {
         items(movies) { movie ->
-            MovieItem(movie = movie, navController = navController, moviesViewModel = moviesViewModel)
+            MovieItem(
+                movie = movie,
+                navController = navController,
+                moviesViewModel = moviesViewModel
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MovieItem(movie: Movie, navController: NavHostController, moviesViewModel: MoviesViewModel) {
+private fun MovieItem(
+    movie: Movie,
+    navController: NavHostController,
+    moviesViewModel: MoviesViewModel
+) {
     Card(
         modifier = Modifier
             .fillMaxSize()

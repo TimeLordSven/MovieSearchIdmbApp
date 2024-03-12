@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Mad Level 4 Task 2</string>
+    <string name="overview_title">Overview</string>
     <string name="search_movie_hint">Search for Movies!</string>
-
+    <string name="no_movies_found">No Movies Found, try searching again</string>
+    <string name="search_error">Search resulted in error %s</string>
+    <string name="still_loading">Still Loading</string>
+    <string name="unknown_state">Search new movie, or exit application</string>
 </resources>
